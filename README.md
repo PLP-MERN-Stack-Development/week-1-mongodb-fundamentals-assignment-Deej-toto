@@ -44,4 +44,89 @@ Your work will be automatically submitted when you push to your GitHub Classroom
 
 - [MongoDB Documentation](https://docs.mongodb.com/)
 - [MongoDB University](https://university.mongodb.com/)
-- [MongoDB Node.js Driver](https://mongodb.github.io/node-mongodb-native/) 
+- [MongoDB Node.js Driver](https://mongodb.github.io/node-mongodb-native/)
+
+
+## 🛠️ Setup Instructions
+
+This project uses a local MongoDB instance to manage book data.These are the steps I took.
+
+### 1. Database Setup
+- **Database Name**: `plp_bookstore`
+- **Collection Name**: `books`
+- **Documents**: Inserted via MongoDB Compass
+
+### 2. Shell Access
+- Opened the MongoDB shell using:
+  ```bash
+  mongosh
+  ```
+- Switched to the target database:
+  ```js
+  use plp_bookstore
+  ```
+
+### 3. Executed Queries
+All queries were run directly in `mongosh`, including:
+
+#### 📄 Query Operations
+```js
+db.books.find({ published_year: { $gt: 2015 } })
+db.books.find({}, { title: 1, author: 1, _id: 0 })
+db.books.find().sort({ price: -1 })
+db.books.find().skip(5).limit(5)
+db.books.find({ genre: "Fantasy" }, { title: 1, _id: 0 })
+```
+
+#### 📊 Aggregation Pipelines
+```js
+db.books.aggregate([
+  { $group: { _id: "$genre", totalBooks: { $sum: 1 } } }
+])
+
+db.books.aggregate([
+  { $group: { _id: "$author", avgPrice: { $avg: "$price" } } }
+])
+
+db.books.aggregate([
+  { $match: { genre: "Thriller" } },
+  { $sort: { price: 1 } }
+])
+
+db.books.aggregate([
+  { $project: { title: 1, price: 1, _id: 0 } }
+])
+
+db.books.aggregate([
+  { $match: { published_year: { $gt: 2010 } } },
+  { $count: "booksAfter2010" }
+])
+```
+
+#### ⚙️ Indexing
+```js
+db.books.createIndex({ title: 1 })
+db.books.createIndex({ author: 1, genre: 1 })
+db.books.getIndexes()
+db.books.dropIndex("title_1")
+```
+
+### 4. Validation
+- Verified document presence:
+  ```js
+  db.books.find().pretty()
+  ```
+- Confirmed active indexes:
+  ```js
+  db.books.getIndexes()
+  ```
+
+
+
+
+
+
+
+
+
+
